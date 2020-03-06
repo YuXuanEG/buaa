@@ -79,8 +79,23 @@ void pat_2() {
 
 /*
 1003 Emergency
+你是一个救援队长，你要救援有危险的城市，你需要尽可能快的到达有危险的城市，并且带尽可能多的人。
+
+输入：
+
+第1行：4个正整数： 城市数量N、 路数量M、你在的城市、你要救援的城市。
+
+第2行：N个整数，第i个数表示第i个城市的救援队数量。
+
+然后M行：每一行表示一条路，三个数字分别是起点、终点、距离。
+
+保证至少有一条路让你去你要救援的城市。
+
+输出：
+
+最短路径条数  可带的最多人数
 */
-#define Inf INT_MAX
+#define Infinite INT_MAX
 
 typedef struct Vertex* Vertex, * Vertexes;
 typedef struct Adj* Adj, * Adjs;
@@ -90,9 +105,9 @@ struct Vertex {
     int id;         /* Unique id of a vertex */
     int known;      /* If the vertex has been traversed */
     int dist;       /* the distance along the path from start point */
-    int nrescue;    /* Rescue teams in this city */
-    int totrescue;  /* Total rescue teams along the path */
-    int npath;      /* Length of the path */
+    int num_rescue;    /* Rescue teams in this city */
+    int total_rescue;  /* Total rescue teams along the path */
+    int length_path;      /* Length of the path */
     Adj adj;        /* Pointer to the next vertex */
 };
 
@@ -119,29 +134,29 @@ void Read(Graph G)
         scanf_s("%d", &nrescue);
         v->id = i;
         v->known = 0;
-        v->dist = Inf;
-        v->nrescue = nrescue;
-        v->totrescue = nrescue;
-        v->npath = 0;
+        v->dist = Infinite;
+        v->num_rescue = nrescue;
+        v->total_rescue = nrescue;
+        v->length_path = 0;
         v->adj = NULL;
     }
 
-    int id1, id2, length;
+    int city1, city2, length;
     for (int i = 0; i < G->nadj; i++)
     {
-        scanf_s("%d %d %d", &id1, &id2, &length);
+        scanf_s("%d %d %d", &city1, &city2, &length);
         /* From id1 to id2 */
         Adj e = G->es + i;
-        e->id = id2;
+        e->id = city2;
         e->length = length;
-        e->iter = G->vs[id1].adj;
-        G->vs[id1].adj = e;
-        /* The other direction */
+        e->iter = G->vs[city1].adj;
+        G->vs[city1].adj = e;
+        /* The other direction 双向图*/
         e++, i++;
-        e->id = id1;
+        e->id = city1;
         e->length = length;
-        e->iter = G->vs[id2].adj;
-        G->vs[id2].adj = e;
+        e->iter = G->vs[city2].adj;
+        G->vs[city2].adj = e;
     }
 }
 
@@ -155,7 +170,7 @@ void ModifiedDijkstra(Graph G)
     {
         /* find the smallest unknown distance vertex */
         v = NULL;
-        minUnknownDist = Inf;
+        minUnknownDist = Infinite;
         for (w = G->vs; w < &G->vs[G->nvertex]; w++)
             if (!w->known && w->dist < minUnknownDist)
             {
@@ -171,23 +186,23 @@ void ModifiedDijkstra(Graph G)
             /* find shorter distance */
             if (v->dist + e->length < w->dist)
             {
-                w->npath = v->npath;
-                w->totrescue = w->nrescue + v->totrescue;
+                w->length_path = v->length_path;
+                w->total_rescue = w->num_rescue + v->total_rescue;
                 w->dist = v->dist + e->length;
             }
             /* find same shortest distance */
             else if (v->dist + e->length == w->dist)
             {
-                w->npath += v->npath;
-                if (w->totrescue < w->nrescue + v->totrescue)
-                    w->totrescue = w->nrescue + v->totrescue;
+                w->length_path += v->length_path;
+                if (w->total_rescue < w->num_rescue + v->total_rescue)
+                    w->total_rescue = w->num_rescue + v->total_rescue;
             }
         }
     }
 }
 
 void pat_3() {
-    int N, M, C1, C2;
+    int N, M, C1, C2;//N:城市数，M：路数，C1：当前所在城市，C2：需要救援的城市
     scanf_s("%d %d %d %d", &N, &M, &C1, &C2);
 
     /* Create graph */
@@ -199,11 +214,11 @@ void pat_3() {
     /* Read all the data and build the graph */
     Read(G);
     G->vs[C1].dist = 0;
-    G->vs[C1].npath = 1;
+    G->vs[C1].length_path = 1;
 
     /* Find the shortest path and maximum rescue teams */
     ModifiedDijkstra(G);
 
-    printf("%d %d", G->vs[C2].npath, G->vs[C2].totrescue);
+    printf("%d %d", G->vs[C2].length_path, G->vs[C2].total_rescue);
 
 }
