@@ -1,6 +1,5 @@
-﻿
-#include "Pat.h"
-void pat_1() {
+﻿#include "Pat.h"
+void pat_c1() {
 	int a, b, sum;
 	printf("input 2 integers a and b where −10^6< a,b <10^6 \n");
 	scanf_s("%d %d", &a, &b);
@@ -31,11 +30,12 @@ void pat_1() {
 	}
 }
 
+
 typedef struct Poly{
 	double coefficients;//系数
 	int exponents;//指数
 }Poly[20];//一个结构体数组最多存储20个poly对象
-void pat_2() {
+void pat_c2() {
 	printf("1002 a+b for Polynomials (25分)\n");
 	int kA,kB,kSumCount=0;
 	Poly a, b, sum;
@@ -114,7 +114,7 @@ struct Vertex {
 struct Adj {
     int id;         /* The city's id it is connected to */
     int length;     /* The length of the edge */
-    Adj iter;       /* Pointer to the next adjacent city */
+    Adj* iter;       /* Pointer to the next adjacent city */
 };
 
 struct Graph {
@@ -201,14 +201,14 @@ void ModifiedDijkstra(Graph G)
     }
 }
 
-void pat_3() {
+void pat_c3() {
     int N, M, C1, C2;//N:城市数，M：路数，C1：当前所在城市，C2：需要救援的城市
     scanf_s("%d %d %d %d", &N, &M, &C1, &C2);
 
     /* Create graph */
     Vertexes vs = (Vertexes)malloc(N * sizeof(struct Vertex));
     Adjs es = (Adjs)malloc(M * 2 * sizeof(struct Adj));
-    struct Graph sG = { .vs = vs, .es = es, .nvertex = N, .nadj = M * 2 };
+    struct Graph sG = { sG.vs = vs, sG.es = es, sG.nvertex = N, sG.nadj = M * 2 };
     Graph G = &sG;
 
     /* Read all the data and build the graph */
