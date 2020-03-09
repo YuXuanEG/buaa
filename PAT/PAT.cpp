@@ -2,6 +2,7 @@
 using namespace std;
 
 void pat_1() {
+	cout << "1001 A+B Format (20 score)" << endl;
 	int a, b, sum;
 	printf("input 2 integers a and b where −10^6< a,b <10^6 \n");
 	scanf_s("%d %d", &a, &b);
@@ -34,7 +35,7 @@ void pat_1() {
 
 
 void pat_2() {
-	cout <<"1002 a+b for Polynomials (25分)"<<endl;
+	cout <<"1002 a+b for Polynomials (25 score)"<<endl;
 	map<int, float> coefMap;
 	for (int i = 0; i < 2; i++) {
 		int k;
@@ -57,8 +58,179 @@ void pat_2() {
 	
 }
 
+/*
+1003 Emergency
+你是一个救援队长，你要救援有危险的城市，你需要尽可能快的到达有危险的城市，并且带尽可能多的人。
 
+输入：
+
+第1行：4个正整数： 城市数量N、 路数量M、你在的城市、你要救援的城市。
+
+第2行：N个整数，第i个数表示第i个城市的救援队数量。
+
+然后M行：每一行表示一条路，三个数字分别是起点、终点、距离。
+
+保证至少有一条路让你去你要救援的城市。
+
+输出：
+
+最短路径条数  可带的最多人数
+*/
+const int MAX = 510, INF = 1 << 30;
+int N, M, now, des, C1, C2, L;
+int G[MAX][MAX] = { {0} };//用无向图来表示城市中有多少救援队，且是否有公路
+int Teams[MAX] = { 0 }, t[MAX] = { 0 }, d[MAX], n[MAX] = { 0 };//t表示到达每个城市可以聚集的最多的救援队
+bool visited[MAX] = { 0 };//d表示到达每个城市的最小距离，n表示到达每个城市的最短路径条数
+void Dijkstra(int u)//Dijkstra算法
+{
+	fill(d, d + MAX, INF);
+	d[u] = 0, t[u] = Teams[u], n[u] = 1;
+	for (int i = 0; i < N; i++)
+	{
+		int MIN = INF, v = -1;
+		for (int j = 0; j < N; j++)//找出未访问的最短路径
+		{
+			if (!visited[j] && d[j] < MIN)
+			{
+				MIN = d[j], v = j;
+			}
+		}
+		if (v == -1) return;
+		visited[v] = 1;//标记为已访问
+		for (int j = 0; j < N; j++)//更新
+		{
+			if (!visited[j] && G[v][j])
+			{
+				if (d[v] + G[v][j] < d[j])//距离近则直接走近的
+				{
+					d[j] = d[v] + G[v][j];
+					t[j] = t[v] + Teams[j];
+					n[j] = n[v];
+				}
+				else if (d[v] + G[v][j] == d[j])//距离相等则路径条数增加，并更新救援队数量
+				{
+					if (t[v] + Teams[j] > t[j])
+					{
+						t[j] = t[v] + Teams[j];
+					}
+					n[j] += n[v];
+				}
+			}
+		}
+	}
+}
 void pat_3() {
-    int N, M, C1, C2;//N:城市数，M：路数，C1：当前所在城市，C2：需要救援的城市
-    
+    cout << "1003 Emergency (25 score)" << endl;
+	scanf("%d %d %d %d", &N, &M, &now, &des);
+	for (int i = 0; i < N; i++) scanf("%d", &Teams[i]);
+	for (int i = 0; i < M; i++)
+	{
+		scanf("%d %d %d", &C1, &C2, &L);
+		G[C1][C2] = G[C2][C1] = L;
+	}
+	Dijkstra(now);
+	printf("%d %d", n[des], t[des]);
+}
+
+/*
+题目大意
+	将一个家族构成一棵树，依次输出每一层的叶节点个数；
+
+输入：
+	第一行：n：树中的节点数目；m：没有叶子的节点数目
+
+	后m行：ID：两位数字，表示一个非叶子的节点；k：此节点孩子的数目；剩下的为子节点的编号；
+
+输出：
+	从根节点那层开始，输出每一层的叶节点数目，中间用空格隔开；
+
+思路
+建立map，每个非叶节点值为key，其孩子数组为value。
+
+采用广度遍历的思路，将每层待遍历的非叶节点加入vector中，遍历每个非叶节点的所有孩子，按以下思路：
+
+若该孩子出现在map的key中，即表示它是非叶节点，加入vector中；
+若没出现，则是该层叶子，计数器+1；
+初始化为{1}，即从根开始；当vector为空时结束。
+
+首先输出第1层叶子数：
+
+节点总数为1时，输出1；
+节点总数大于1时，输出0；
+剩下每层遍历输出计数即可。
+
+代码实现上：
+
+用到了unordered_map，比map效率更高；
+vector可以直接互相赋值，a = b，相当于清空a，填充为b的元素。
+*/
+void pat_4() {
+	cout << "1004 Counting Leaves(30 score)" << endl;
+	int n, m;
+	cin >> n >> m;
+	if (n > 0) {
+		if (n == 1) {
+			cout << 1;
+		}
+		else {
+			unordered_map<int, vector<int> > mmap; //建立非叶节点号及孩子数组映射
+			for (int i = 0; i < m; i++) {
+				int p, k;
+				cin >> p >> k;
+				vector<int> nodes(k);
+				for (int j = 0; j < k; j++) {
+					cin >> nodes[j];
+				}
+				mmap[p] = nodes;
+			}
+			vector<int> v;
+			v.push_back(1);
+			cout << "0";
+			while (v.size() > 0) {
+				int count = 0;
+				vector<int> newV;
+				for (int i = 0; i < v.size(); i++) {
+					for (int j = 0; j < mmap[v[i]].size(); j++) {
+						if (mmap.find(mmap[v[i]][j]) == mmap.end()) {  //未出现在非叶中，是叶子
+							count++;
+						}
+						else {
+							newV.push_back(mmap[v[i]][j]);
+						}
+					}
+				}
+				v = newV;
+				cout << " " << count;
+			}
+
+		}
+		cout << endl;
+	}
+}
+
+void pat_5() {
+	cout << "1005 Spell It Right (20 score)" << endl;
+	int num, digit,sum=0;//num：输入的数字，digit保存每一位数,sum：保存每一位的和
+	cin >> num;
+	while (true) {
+		digit = num % 10;
+		if (digit == 0)break;
+		sum += digit;
+		num /= 10;
+	}
+	//char numEnglish[10][6] = { "zero","one","two","three","four","five","six","seven","eight","nine" };
+	string numEnglish[] = { "zero","one","two","three","four","five","six","seven","eight","nine" };
+	vector<int> sumDigits;
+	while (true){
+		int digitSum = sum % 10;
+		if (digitSum == 0)break;
+		sum /= 10;
+		sumDigits.push_back(digitSum);
+	}
+	
+	/*for (vector<int>::reverse_iterator j = sumDigits.rbegin(); j != sumDigits.rend(); ++j) {
+		cout << numEnglish[*j] << " ";
+	}*/
+	
+	cout << endl;
 }

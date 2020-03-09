@@ -8,3 +8,5 @@
 void pat_1();
 void pat_2();
 void pat_3();
+void pat_4();
+void pat_5();
