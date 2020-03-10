@@ -272,3 +272,250 @@ void pat_5_2() {
 		if (i > 0) printf(" ");
 	}
 }
+
+void pat_6() {
+	int n;
+	cin >> n;
+	string minId = "";
+	string maxId = "";
+	string minTime = "23:59:59";
+	string maxTime = "00:00:00";
+	for (int i = 0; i < n; i++) {
+		string id, t1, t2;
+		cin >> id >> t1 >> t2;
+		if (t1 < minTime) {
+			minTime = t1;
+			minId = id;
+		}
+		if (t2 > maxTime) {
+			maxTime = t2;
+			maxId = id;
+		}
+	}
+	cout << minId << " " << maxId << endl;
+}
+
+void pat_7() {
+	int n;
+	scanf("%d", &n);
+	vector<int> v(n);
+	int leftindex = 0, rightindex = n - 1, sum = -1, temp = 0, tempindex = 0;
+	//动态规划 
+	for (int i = 0; i < n; i++) {
+		scanf("%d", &v[i]);
+		temp = temp + v[i]; //临时和 
+		if (temp < 0) { //小于0则从下一个数重新开始计算 
+			temp = 0;
+			tempindex = i + 1;
+		}
+		else if (temp > sum) { //临时和大于当前的sum，则更新sum ,最左边的值的位置为上一次tempindex,最右边的值的位置为当前的i 
+			sum = temp;
+			leftindex = tempindex;
+			rightindex = i;
+		}
+	}
+	if (sum < 0) sum = 0;
+	printf("%d %d %d", sum, v[leftindex], v[rightindex]);
+}
+void pat_8() {
+	int n;
+	cin >> n;
+	int up = 0;
+	int down = 0;
+	int last = 0;
+	for (int i = 0; i < n; i++) {
+		int k;
+		cin >> k;
+		if (k > last) {
+			up += (k - last);
+		}
+		else {
+			down += (last - k);
+		}
+		last = k;
+	}
+
+	int sum = n * 5 + up * 6 + down * 4;
+	cout << sum << endl;
+}
+void pat_9() {
+	map<int, double> mmap;
+
+	int k1, k2;
+	cin >> k1;
+	vector<int> exp(k1);
+	vector<double> coef(k1);
+	for (int i = 0; i < k1; i++) {
+		cin >> exp[i] >> coef[i];
+	}
+
+	cin >> k2;
+	for (int i = 0; i < k2; i++) {
+		int tempExp;
+		double tempCoef;
+		cin >> tempExp >> tempCoef;
+		for (int j = 0; j < k1; j++) {
+			int newExp = tempExp + exp[j];
+			mmap[newExp] += (tempCoef * coef[j]);
+			if (mmap[newExp] == 0) {
+				mmap.erase(newExp);
+			}
+		}
+	}
+
+	cout << mmap.size();
+	for (auto it = mmap.rbegin(); it != mmap.rend(); ++it) {
+		cout << " " << it->first << " " << setprecision(1) << fixed << it->second;
+	}
+	cout << endl;
+}
+void pat_10() {
+	cout << "1010 Radix (25 score)" << endl;
+
+}
+
+void pat_11(){}
+void pat_12(){}
+void pat_13(){}
+void pat_14(){}
+void pat_15(){}
+void pat_16(){}
+void pat_17(){}
+void pat_18(){}
+void pat_19(){}
+void pat_20(){}
+void pat_21(){}
+void pat_22(){}
+void pat_23(){}
+void pat_24(){}
+void pat_25(){}
+void pat_26(){}
+void pat_27(){}
+void pat_28(){}
+void pat_29(){}
+void pat_30(){}
+void pat_31(){}
+void pat_32(){}
+void pat_33(){}
+void pat_34(){}
+void pat_35(){}
+void pat_36(){}
+void pat_37(){}
+void pat_38(){}
+void pat_39(){}
+void pat_40(){}
+void pat_41(){}
+void pat_42(){}
+void pat_43(){}
+void pat_44(){}
+void pat_45(){}
+void pat_46(){}
+void pat_47(){}
+void pat_48(){}
+void pat_49(){}
+void pat_50(){}
+void pat_51(){}
+void pat_52(){}
+void pat_53(){}
+void pat_54(){}
+void pat_55(){}
+void pat_56(){}
+void pat_57(){}
+void pat_58(){}
+void pat_59(){}
+void pat_60(){}
+void pat_61(){}
+void pat_62(){}
+void pat_63(){}
+void pat_64(){}
+void pat_65(){}
+void pat_66(){}
+void pat_67(){}
+void pat_68(){}
+void pat_69(){}
+void pat_70(){}
+void pat_71(){}
+void pat_72(){}
+void pat_73(){}
+void pat_74(){}
+void pat_75(){}
+void pat_76(){}
+void pat_77(){}
+void pat_78(){}
+void pat_79(){}
+void pat_80(){}
+void pat_81(){}
+void pat_82(){}
+void pat_83(){}
+void pat_84(){}
+void pat_85(){}
+void pat_86(){}
+void pat_87(){}
+void pat_88(){}
+void pat_89(){}
+void pat_90(){}
+void pat_91(){}
+void pat_92(){}
+void pat_93(){}
+void pat_94(){}
+void pat_95(){}
+void pat_96(){}
+void pat_97(){}
+void pat_98(){}
+void pat_99(){}
+void pat_100(){}
+void pat_101(){}
+void pat_102(){}
+void pat_103(){}
+void pat_104(){}
+void pat_105(){}
+void pat_106(){}
+void pat_107(){}
+void pat_108(){}
+void pat_109(){}
+void pat_110(){}
+void pat_111(){}
+void pat_112(){}
+void pat_113(){}
+void pat_114(){}
+void pat_115(){}
+void pat_116(){}
+void pat_117(){}
+void pat_118(){}
+void pat_119(){}
+void pat_120(){}
+void pat_121(){}
+void pat_122(){}
+void pat_123(){}
+void pat_124(){}
+void pat_125(){}
+void pat_126(){}
+void pat_127(){}
+void pat_128(){}
+void pat_129(){}
+void pat_130(){}
+void pat_131(){}
+void pat_132(){}
+void pat_133(){}
+void pat_134(){}
+void pat_135(){}
+void pat_136(){}
+void pat_137(){}
+void pat_138(){}
+void pat_139(){}
+void pat_140(){}
+void pat_141(){}
+void pat_142(){}
+void pat_143(){}
+void pat_144(){}
+void pat_145(){}
+void pat_146(){}
+void pat_147(){}
+void pat_148(){}
+void pat_149(){}
+void pat_150(){}
+void pat_151(){}
+void pat_152(){}
+void pat_153(){}
+void pat_154(){}
+void pat_155(){}
