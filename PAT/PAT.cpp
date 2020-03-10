@@ -208,29 +208,67 @@ void pat_4() {
 	}
 }
 
+/*
+32位机：
+	有符号短整型short [int] /signed short [int]		2 byte		-32768 ~ 32767							-2^15 ~ 2^15-1
+	无符号短整型unsigned short [int]				2 byte			 0 ~ 65535							    0 ~ 2^16-1
+													
+	有符号整型int /signed [int]						4 byte		-2147483648 ~ 2147483647				-2^31 ~ 2^31-1
+	无符号整型unsigned [int]						4 byte				  0 ~ 4294967295				    0 ~ 2^32-1
+
+	有符号长整型long [int]/signed long [int]        4 byte      -2147483648 ~ 2147483647
+
+	无符号长整型unsigned long [int]					4 byte				  0 ~ 4294967295
+
+	long long                                       8 byte				  0 ~ 18446744073709552000
+
+64位机：
+	
+*/
 void pat_5() {
 	cout << "1005 Spell It Right (20 score)" << endl;
-	int num, digit,sum=0;//num：输入的数字，digit保存每一位数,sum：保存每一位的和
-	cin >> num;
-	while (true) {
-		digit = num % 10;
-		if (digit == 0)break;
-		sum += digit;
-		num /= 10;
+	char N[110];//输入为N (≤10^100),不能用整型接收,
+	cin >> N;
+	int n = strlen(N), sum = 0;
+	for (int i = 0; i < n; i++)
+	{
+		sum += (N[i]-'0');
 	}
 	//char numEnglish[10][6] = { "zero","one","two","three","four","five","six","seven","eight","nine" };
 	string numEnglish[] = { "zero","one","two","three","four","five","six","seven","eight","nine" };
 	vector<int> sumDigits;
-	while (true){
+	do {
+		//如果直接是0也要放进数组中
 		int digitSum = sum % 10;
-		if (digitSum == 0)break;
-		sum /= 10;
 		sumDigits.push_back(digitSum);
+		sum /= 10;
+	} while (sum);
+	reverse(sumDigits.begin(), sumDigits.end());
+
+	if(sumDigits.size()>0) cout << numEnglish[sumDigits[0]];
+	
+	for (int i = 1; i < sumDigits.size() ; ++i){
+		cout << " " << numEnglish[sumDigits[i]] ;
 	}
 	
-	/*for (vector<int>::reverse_iterator j = sumDigits.rbegin(); j != sumDigits.rend(); ++j) {
-		cout << numEnglish[*j] << " ";
-	}*/
-	
 	cout << endl;
+}
+
+void pat_5_2() {
+	char N[110];
+	scanf("%s", &N);
+	char ref[10][6] = { "zero","one","two","three","four","five","six","seven","eight","nine" };
+	int n = strlen(N), sum = 0, len = 0;
+	int ans[10]; //存放sum
+	for (int i = 0; i < n; i++) {
+		sum += (N[i] - '0');
+	}
+	do {
+		ans[len++] = sum % 10;
+		sum /= 10;
+	} while (sum);
+	for (int i = len - 1; i >= 0; i--) {
+		printf("%s", ref[ans[i]]);
+		if (i > 0) printf(" ");
+	}
 }
