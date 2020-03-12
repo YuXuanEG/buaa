@@ -426,9 +426,156 @@ void pat_10() {
 
 }
 
-void pat_11(){}
-void pat_12(){}
-void pat_13(){}
+void pat_11(){
+	cout << "1011 World Cup Betting (20 score)" << endl;
+	char results[] = { 'W', 'T', 'L' };
+	float profit = 1.0;
+	for (int i = 0; i < 3; i++) {
+		float best = 0.0;
+		int bet = -1;
+		for (int j = 0; j < 3; j++) {
+			float temp;
+			cin >> temp;
+			if (temp > best) {
+				best = temp;
+				bet = j;
+			}
+		}
+		profit *= best;
+		cout << results[bet] << " ";
+	}
+	profit = (profit * 0.65 - 1) * 2;
+	cout << setprecision(2) << fixed << profit << endl;
+}
+
+class Stu {
+public:
+	string id;
+	int C, CC;//C分数 CC排名
+	int M, MM;
+	int E, EE;
+	int A, AA;
+};
+//自定义排序函数：大在前
+int cmpC(Stu a, Stu b) {
+	return(a.C > b.C);
+}
+int cmpM(Stu a, Stu b) {
+	return(a.M > b.M);
+}
+int cmpE(Stu a, Stu b) {
+	return(a.E > b.E);
+}
+int cmpTotal(Stu a, Stu b) {
+	return(a.A > b.A);
+}
+void pat_12(){
+	cout << "1012 The Best Rank (25 score)" << endl;
+
+	int n, m;
+	cin >> n >> m;
+	Stu stu[2000];
+	int count = 0;
+	string id;
+	int  C, M, E;
+	for (int i = 0; i < n; i++) {
+		cin >> id >> C >> M >> E;
+		stu[count].id = id;
+		stu[count].C = C;
+		stu[count].M = M;
+		stu[count].E = E;
+		stu[count].A = C + M + E;
+		count++;
+	}
+
+	string want[2000];
+	for (int i = 0; i < m; i++) {
+		cin >> want[i];
+	}
+
+	//排序优先级 C->M->E->Total
+	stable_sort(stu, stu + count, cmpTotal);
+	stu[0].AA = 1;
+	for (int i = 0; i < count; i++) {//存A排名，注意一下并列情况下的排名技巧
+		int curRank = 1;
+		if (stu[i].A == stu[i - 1].A) {
+			stu[i].AA = stu[i - 1].AA;
+		}
+		else {
+			stu[i].AA = curRank = i + 1;
+		}
+	}
+
+	stable_sort(stu, stu + count, cmpE);
+	stu[0].EE = 1;
+	for (int i = 0; i < count; i++) {//存E排名
+		int curRank = 1;
+		if (stu[i].E == stu[i - 1].E) {
+			stu[i].EE = stu[i - 1].EE;
+		}
+		else {
+			stu[i].EE = curRank = i + 1;
+		}
+	}
+
+	stable_sort(stu, stu + count, cmpM);
+	stu[0].MM = 1;
+	for (int i = 0; i < count; i++) {//存M排名
+		int curRank = 1;
+		if (stu[i].M == stu[i - 1].M) {
+			stu[i].MM = stu[i - 1].MM;
+		}
+		else {
+			stu[i].MM = curRank = i + 1;
+		}
+	}
+
+	stable_sort(stu, stu + count, cmpC);
+	stu[0].CC = 1;
+	for (int i = 0; i < count; i++) {//存C排名
+		int curRank = 1;
+		if (stu[i].C == stu[i - 1].C) {
+			stu[i].CC = stu[i - 1].CC;
+		}
+		else {
+			stu[i].CC = curRank = i + 1;
+		}
+	}
+
+	//输出科目优先级：A C M E
+	bool find = false;
+	for (int i = 0; i < m; i++) {
+		find = false;
+		for (int j = 0; j < n; j++) {
+			if (stu[j].id == want[i]) {
+				find = true;
+				if (stu[j].AA <= stu[j].CC && stu[j].AA <= stu[j].MM && stu[j].AA <= stu[j].EE) {
+					cout << stu[j].AA << " A\n";
+				}
+				else if (stu[j].CC <= stu[j].AA && stu[j].CC <= stu[j].MM && stu[j].CC <= stu[j].EE) {
+					cout << stu[j].CC << " C\n";
+
+				}
+				else if (stu[j].MM <= stu[j].AA && stu[j].MM <= stu[j].CC && stu[j].MM <= stu[j].EE) {
+					cout << stu[j].MM << " M\n";
+				}
+				else  if (stu[j].EE <= stu[j].AA && stu[j].EE <= stu[j].CC && stu[j].EE <= stu[j].MM) {
+					cout << stu[j].EE << " E\n";
+				}
+				break;
+			}
+		}
+		if (!find) {
+			cout << "N/A\n";
+		}
+	}
+
+	system("pause");
+}
+void pat_13(){
+	cout << "1013 Battle Over Cities (25 score)" << endl;
+
+}
 void pat_14(){}
 void pat_15(){}
 void pat_16(){}
