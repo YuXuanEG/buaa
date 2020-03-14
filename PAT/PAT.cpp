@@ -572,12 +572,167 @@ void pat_12(){
 
 	system("pause");
 }
+
+bool visited_13[1000];
+bool graph_13[1000][1000];
+int n_13, m_13, k_13;
+
+void dfs_13(int start) {
+	visited_13[start] = true;
+	for (int i = 1; i <= n_13; i++) {    //i<=n
+		if (visited_13[i] == false && graph_13[start][i] == true) {
+			dfs_13(i);
+		}
+	}
+}
+
 void pat_13(){
 	cout << "1013 Battle Over Cities (25 score)" << endl;
+	scanf("%d%d%d", &n_13, &m_13, &k_13);
+
+	for (int i = 0; i < m_13; i++) {
+		int a, b;
+		scanf("%d%d", &a, &b);
+		graph_13[a][b] = graph_13[b][a] = true;
+	}
+
+	for (int i = 0; i < k_13; i++) {
+		int city, num = 0;
+		scanf("%d", &city);
+		fill(visited_13, visited_13 + n_13 + 1, false);
+		visited_13[city] = true;
+
+		for (int j = 1; j <= n_13; j++) {//城市编号从1开始 且i<=n
+			if (visited_13[j] == false) {
+				dfs_13(j);
+				num += 1;
+			}
+		}
+		printf("%d\n", num - 1);
+	}
+}
+
+/*
+输入
+第三行：询问交易结束时间的顾客编号
+输出
+给出每位询问顾客的交易结束时间（以HH:MM的形式给出，HH取值[08，17]，MM取值[00，59]，若交易结束时间晚于17:00，输出Sorry）
+
+#include<iostream>
+#include<queue>
+#include<climits>
+*/
+void pat_14(){
+	cout << "1014 Waiting in Line (30 score)" << endl;
+	int n, m, k, q;                     //n:窗口数,m:黄线容纳数,k:顾客数,q:询问的顾客数
+	int time = 0;                       //当前时间已过08:00多少分钟
+	int index;
+	scanf("%d%d%d%d", &n, &m, &k, &q);
+
+	queue<int> window[20];              //最多有20个窗口
+	int customer[1001][2];              //最多有1000名顾客（编号从1开始） 存放顾客需求的[0]处理时间和[1]结束时间
+	int back[1001];                     //对游客的问题处理时间进行备份
+	for (int i = 1; i <= k; i++) {        //游客编号从1开始！！！
+		scanf("%d", &customer[i][0]);
+		back[i] = customer[i][0];
+	}
+
+	int num = n * m < k ? n * m : k;    //先按规则 依次填满黄线内的窗口
+	index = 1;
+	while (index <= num) {
+		for (int j = 0; j < n; j++) {     //顾客1->窗口0 顾客2->窗口1 ...... 顾客m->窗口0 顾客m+1->窗口1
+			window[j].push(index);
+			index++;
+		}
+	}
+
+	//当黄线之外还有顾客时 一直会有进有出
+	index = n * m + 1;                  //当前黄线外第一位顾客的序号
+	while (index <= k) {
+		int fastWin = 0;                //记录窗口中最快结束的那个窗口
+		int minTime = INT_MAX;          //记录当前各个窗口正在处理的客户中 剩余最短时间
+		for (int i = 0; i < n; i++) {
+			if (customer[window[i].front()][0] < minTime) {
+				minTime = customer[window[i].front()][0];
+				fastWin = i;
+			}
+		}
+		for (int i = 0; i < n; i++) {     //更新正在窗口前处理问题的客户的剩余时间
+			customer[window[i].front()][0] -= minTime;
+		}
+		time += minTime;                //总计时累加
+		customer[window[fastWin].front()][1] = time;
+		window[fastWin].pop();
+		window[fastWin].push(index++);
+
+	}
+
+	//黄线之外无客户 只出不进 可直接计算出各个客户的结束服务时间
+	for (int i = 0; i < n; i++) {         //按顺序依 次计算每个窗口队列中各客户的服务结束时间
+		int temp = time;
+		while (window[i].empty() != true) {
+			int x = window[i].front();
+			window[i].pop();
+			time += customer[x][0];
+			customer[x][1] = time;
+		}
+		time = temp;                    //由于是每个队列计算一次 故需要恢复原始的time
+	}
+
+	for (int i = 0; i < q; i++) {
+		int c;
+		scanf("%d", &c);
+		if (customer[c][1] - back[c] < 540) { //由于原始数据在计算过程中丢失 故需使用备份back
+			int h = 8 + customer[c][1] / 60;
+			int m = customer[c][1] % 60;
+			printf("%02d:%02d\n", h, m);    //
+		}
+		else {
+			printf("Sorry\n");
+		}
+	}
+}
+
+/*
+输入
+每一行两个正整数N(<10^5),D进制(1<=D<=10)
+最后一行是负数作为结束标志
+输出
+如果N按照进制D表示的数是可逆素数输出Yes,否则输出No
+*/
+bool isPrime(int num) {
+	if (num == 1) return false;
+	if (num == 2) return true;
+	int end = sqrt(num);                    //判断到sqrt(num)即可
+	for (int i = 2; i <= end; i++) {
+		if (num % i == 0) return false;
+	}
+	return true;
+}
+int convert(int num, int radix) {
+	vector<int> temp;
+	int a = 0;
+	while (num != 0) {
+		temp.push_back(num % radix);
+		num /= radix;
+	}
+	for (int i = 0; i < temp.size(); i++) {  //i递增：反转，i递减：正常（手工模拟一下更清楚）
+		a = a * radix + temp[i];           //利用 秦九韶 算法（寻找迭代公式）
+	}
+	return a;
+}
+void pat_15(){
+	cout << "1015 Reversible Primes (20 score)" << endl;
+	int num, radix, revNum;
+	scanf("%d", &num);
+	while (num > 0) {
+		cin >> radix;
+		revNum = convert(num, radix);
+		(isPrime(num) == true && isPrime(revNum) == true) ? cout << "Yes" << endl : cout << "No" << endl;
+		cin >> num;
+	}
 
 }
-void pat_14(){}
-void pat_15(){}
 void pat_16(){}
 void pat_17(){}
 void pat_18(){}
